@@ -130,6 +130,8 @@ ruby_show_version(void)
 #ifdef HAVE_MALLOC_CONF
     if (malloc_conf) printf("malloc_conf=%s\n", malloc_conf);
 #endif
+
+    printf("Built by: @yuseiito 2021 College of Information Science, University of Tsukuba\n");
     fflush(stdout);
 }
 
