@@ -11532,6 +11532,33 @@ rb_enc_interned_str_cstr(const char *ptr, rb_encoding *enc)
  *
  */
 
+VALUE palindrome(VALUE self){
+
+    const char *pat = "[^A-z0-9\\p{hiragana}\\p{katakana}]";
+   VALUE argv[2] = {rb_reg_regcomp(rb_utf8_str_new_cstr(pat)),
+                   rb_str_new_cstr("")}; 
+   VALUE filtered_str = rb_str_downcase(0, NULL, str_gsub(2, argv, self, FALSE));
+
+   int len=NUM2INT(rb_str_length(filtered_str));
+   
+   if(len==0) return Qfalse;
+    
+    int i=0;
+
+    for(i=0;i<len/2;i++){
+     VALUE argvc1[1]={INT2NUM(i)};
+     VALUE argvc2[1]={INT2NUM(-i)};
+       VALUE c1=rb_str_aref_m(1,argvc1,filtered_str);
+       VALUE c2=rb_str_aref_m(1,argvc2,filtered_str);
+    
+       if(c1!=c2)
+         return Qfalse;
+    }
+    
+    return Qtrue;
+}
+
+
 void
 Init_String(void)
 {
@@ -11692,6 +11719,7 @@ Init_String(void)
     rb_define_method(rb_cString, "unicode_normalize", rb_str_unicode_normalize, -1);
     rb_define_method(rb_cString, "unicode_normalize!", rb_str_unicode_normalize_bang, -1);
     rb_define_method(rb_cString, "unicode_normalized?", rb_str_unicode_normalized_p, -1);
+    rb_define_method(rb_cString, "palindrome?", palindrome, 0);
 
     rb_fs = Qnil;
     rb_define_hooked_variable("$;", &rb_fs, 0, rb_fs_setter);
@@ -11738,4 +11766,5 @@ Init_String(void)
     rb_define_method(rb_cSymbol, "end_with?", sym_end_with, -1);
 
     rb_define_method(rb_cSymbol, "encoding", sym_encoding, 0);
+    
 }
