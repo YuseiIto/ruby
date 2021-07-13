@@ -5382,6 +5382,40 @@ rb_int_s_isqrt(VALUE self, VALUE num)
     }
 }
 
+
+static VALUE
+int_add(VALUE self, VALUE n)
+{
+    if(FIXNUM_P(self) && FIXNUM_P(n)){
+        int a = FIX2INT(self);
+        int b = FIX2INT(n);
+        int c = a + b ;
+        VALUE result = INT2NUM(c);
+        return result;
+    }else{
+        return rb_int_plus(self, n);
+    }
+    
+}
+
+
+static VALUE
+int_sub(VALUE self, VALUE n)
+{
+    if(FIXNUM_P(self) && FIXNUM_P(n)){
+        int a = FIX2INT(self);
+        int b = FIX2INT(n);
+        int c = a - b ;
+        VALUE result = INT2NUM(c);
+        return result;
+    }else{
+        return rb_int_minus(self, n);
+    }
+    
+}
+
+
+
 /*
  *  Document-class: ZeroDivisionError
  *
@@ -5583,6 +5617,8 @@ Init_Numeric(void)
 
     rb_define_method(rb_cInteger, "size", int_size, 0);
     rb_define_method(rb_cInteger, "digits", rb_int_digits, -1);
+    rb_define_method(rb_cInteger, "add", int_add, 1);
+    rb_define_method(rb_cInteger, "sub", int_sub, 1);
 
     /* An obsolete class, use Integer */
     rb_define_const(rb_cObject, "Fixnum", rb_cInteger);
