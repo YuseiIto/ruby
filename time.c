@@ -5691,6 +5691,25 @@ rb_time_zone_abbreviation(VALUE zone, VALUE time)
     return rb_obj_as_string(abbr);
 }
 
+
+static VALUE
+time_days_ago(int argc,VALUE *argv,VALUE self){
+    VALUE nth;
+    int n,sec,day_before_sec;
+    
+    rb_scan_args(argc,argv,"01",&nth);
+    
+    if(nth==Qnil) nth=INT2FIX(1);
+    
+    n = NUM2INT(nth);
+
+    sec=NUM2INT(time_to_i(self));
+
+    day_before_sec=sec-(60*60*24*n);
+    
+    return rb_funcall(rb_cTime,rb_intern("at"),1,INT2NUM(day_before_sec));
+}
+
 /*
  *  Time is an abstraction of dates and times. Time is stored internally as
  *  the number of seconds with subsecond since the _Epoch_,
@@ -5933,6 +5952,8 @@ Init_Time(void)
     /* methods for marshaling */
     rb_define_private_method(rb_cTime, "_dump", time_dump, -1);
     rb_define_private_method(rb_singleton_class(rb_cTime), "_load", time_load, 1);
+
+    rb_define_method(rb_cTime,"days_ago",time_days_ago,-1);
 #if 0
     /* Time will support marshal_dump and marshal_load in the future (1.9 maybe) */
     rb_define_private_method(rb_cTime, "marshal_dump", time_mdump, 0);
